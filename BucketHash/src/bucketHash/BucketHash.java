@@ -1,5 +1,6 @@
 package bucketHash;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -19,11 +20,24 @@ public class BucketHash<K, V> implements Map<K, V> {
 	}
 	
 	BucketHash(Map<K, V> map) {
-		
+		for (int i = 0; i < numBuckets; i++) {
+			buckets[i] = new Bucket();
+		}
+		for (Map.Entry<K, V> i: map.entrySet()) {
+			this.getBucket(i.getKey()).put(i.getKey(), i.getValue());
+		}
 	}
 	
 	// Plus all the following...
+	@SuppressWarnings("unchecked")
 	public boolean equals(Object o) {
+		Set<K> key = (Set<K>) keySet();
+		if (!(o instanceof BucketHash<?, ?>)) return false;
+		if (! key.equals(((BucketHash<?, ?>) o).keySet())) return false;
+		for (K k: key) {
+			if (get(k) != ((Map<K, V>) o).get(k))
+				return false;
+		}
 		return true;
 	}
 	
@@ -36,6 +50,7 @@ public class BucketHash<K, V> implements Map<K, V> {
 		return hashCode;
 	}
 	
+	@SuppressWarnings("unchecked")
 	Bucket getBucket(K key) {
 		if (key == null) throw new IllegalArgumentException("null key");
 		int hashCode = key.hashCode();
@@ -109,10 +124,10 @@ public class BucketHash<K, V> implements Map<K, V> {
 				if (header == null) header = node;
 				else {
 					ListNode temp = header;
-					while (temp != null) {
+					while (temp.next != null) {
 						temp = temp.next;
 					}
-					temp = node;
+					temp.next = node;
 				}
 			    node.value = value;
 				return null;
@@ -120,7 +135,8 @@ public class BucketHash<K, V> implements Map<K, V> {
 		}
 		
 		public V remove(K key) {
-			if (header == null) return null;
+			
+			if (key == null || header == null) return null;
 			if (header.key.equals(key)) {
 				V tempValue = header.value;
 				header = header.next;
@@ -136,7 +152,7 @@ public class BucketHash<K, V> implements Map<K, V> {
 					}
 					tempNodeTwo = tempNode;
 				}
-				System.out.println("remove");
+				
 			}
 			return null;
 		}
@@ -152,7 +168,7 @@ public class BucketHash<K, V> implements Map<K, V> {
 		}
 		
 		public Collection<V> values() {
-			Collection<V> values = new HashSet<V>();
+			Collection<V> values = new ArrayList<V>();
 			ListNode tempNode = header;
 			while (tempNode != null) {
 				values.add(tempNode.value);
@@ -162,7 +178,14 @@ public class BucketHash<K, V> implements Map<K, V> {
 		}
 		
 		public String toString() { // optional
-			return null;
+			String output = "";
+//			output += "Key\tValue\n";
+			V value;
+			for (K key: keySet()) {
+				value = get(key);
+				output += key + "\t" + value + "\n";
+			}
+			return output;
 		}
 		
 		@Override
@@ -177,48 +200,45 @@ public class BucketHash<K, V> implements Map<K, V> {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public int size() {
 		int size = 0;
 		for (int i = 0; i < numBuckets; i++) {
 			size += ((Bucket) buckets[i]).size();
 		}
-		// TODO Auto-generated method stub
 		return size;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean isEmpty() {
 		for (int i = 0; i < numBuckets; i++) {
 			if (! ((Bucket) buckets[i]).isEmpty())
 				return false;
 		}
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
 	public boolean containsKey(Object key) {
-		
-		// TODO Auto-generated method stub
 		return get(key) != null;
 	}
 
 	@Override
 	public boolean containsValue(Object value) {
-		Set<V> values = (Set<V>) values();
+		Collection<V> values = (ArrayList<V>) values();
 		for (V v: values) {
 			if (v.equals(value))
 				return true;
 		}
-		// TODO Auto-generated method stub
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public V get(Object key) {
 		return getBucket((K) key).get((K) key);
-		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -226,10 +246,11 @@ public class BucketHash<K, V> implements Map<K, V> {
 		return (getBucket(key).put(key, value));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public V remove(Object key) {
+		if (key == null) return null;
 		return ((Bucket) buckets[getIndex(key)]).remove((K) key);
-		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -237,8 +258,6 @@ public class BucketHash<K, V> implements Map<K, V> {
 		for(K key: m.keySet()) {
 			put(key, m.get(key));
 		}
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -247,10 +266,9 @@ public class BucketHash<K, V> implements Map<K, V> {
 		for (int i = 0; i < numBuckets; i++) {
 			buckets[i] = new Bucket();
 		}
-		// TODO Auto-generated method stub
-		
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Set<K> keySet() {
 		Set<K> keySet = new HashSet<K>();
@@ -260,13 +278,13 @@ public class BucketHash<K, V> implements Map<K, V> {
 		return keySet;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<V> values() {
-		Collection<V> values = new HashSet<V>();
+		Collection<V> values = new ArrayList<V>();
 		for (int i = 0; i < numBuckets; i++) {
 			values.addAll(((Bucket) buckets[i]).values());
 		}
-		// TODO Auto-generated method stub
 		return values;
 	}
 
@@ -279,4 +297,17 @@ public class BucketHash<K, V> implements Map<K, V> {
 		return (key == null ? 0 : key.hashCode()) ^
 	     (value == null ? 0 : value.hashCode());
 	}
+	
+	@Override
+	public String toString() {
+		String output = "";
+		output += "Key\tValue\n";
+		for (int i = 0; i < numBuckets; i++) {
+			output += buckets[i].toString();
+		}
+		
+		return output;
+		
+	}
+
 }

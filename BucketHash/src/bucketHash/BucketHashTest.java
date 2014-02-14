@@ -2,9 +2,11 @@ package bucketHash;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.junit.Before;
@@ -23,6 +25,23 @@ public class BucketHashTest {
 		hashtable.put(19, "9");
 	}
 
+	@Test
+	public void testBucketHash() {
+		hashtable = new BucketHash<Integer, String>();
+		assertTrue(hashtable.isEmpty());
+	}
+	
+	@Test
+	public void testBucketHashMap() {
+		Map<Integer, String> map = new HashMap<Integer, String>();
+		map.put(3, "3");
+		map.put(6, "6");
+		map.put(9, "9");
+		map.put(19, "9");
+		BucketHash<Integer, String> hashtableTwo = new BucketHash<Integer, String>(map);
+		assertEquals(hashtable, hashtableTwo);
+	}
+	
 	@Test
 	public void testHashCode() {
 		int hashCode = 0;
@@ -43,6 +62,9 @@ public class BucketHashTest {
 		hashtableTwo.put(9, "9");
 		hashtableTwo.put(19, "9");
 		assertTrue(hashtable.equals(hashtableTwo));
+		
+		hashtableTwo.remove(19);
+		assertFalse(hashtable.equals(hashtableTwo));
 	}
 
 	@Test
@@ -112,6 +134,9 @@ public class BucketHashTest {
 		assertEquals(null, hashtable.get(118));
 		assertEquals(null, hashtable.remove(118));
 		assertEquals(null, hashtable.get(118));
+		
+		// remove null key
+		assertEquals(null, hashtable.remove(null));
 	}
 
 	@Test
@@ -152,11 +177,12 @@ public class BucketHashTest {
 
 	@Test
 	public void testValues() {
-		Set<String> testValues = new HashSet<String>();
-		testValues.add("6");
+		Collection<String> testValues = new ArrayList<String>();
 		testValues.add("3");
+		testValues.add("6");
 		testValues.add("9");
-		Set<String> values = (Set<String>) hashtable.values();
+		testValues.add("9");
+		ArrayList<String> values = (ArrayList<String>) hashtable.values();
 		assertEquals(testValues, values);
 		
 //		// the generated collection of values should always be updated
@@ -174,6 +200,6 @@ public class BucketHashTest {
 	@Test (expected = UnsupportedOperationException.class)
 	public void testEntrySet() {
 		hashtable.entrySet();
+		System.out.println(hashtable);
 	}
-
 }
