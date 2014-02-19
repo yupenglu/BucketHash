@@ -2,7 +2,9 @@ package bucketHash;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,7 +34,8 @@ public class BucketHash<K, V> implements Map<K, V> {
 	@SuppressWarnings("unchecked")
 	public boolean equals(Object o) {
 		Set<K> key = (Set<K>) keySet();
-		if (!(o instanceof BucketHash<?, ?>)) return false;
+//		if (!(o instanceof BucketHash<?, ?>)) return false;
+		if (o.hashCode() != hashCode()) return false;
 		if (! key.equals(((BucketHash<?, ?>) o).keySet())) return false;
 		for (K k: key) {
 			if (get(k) != ((Map<K, V>) o).get(k))

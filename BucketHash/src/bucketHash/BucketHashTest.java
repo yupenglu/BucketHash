@@ -183,6 +183,7 @@ public class BucketHashTest {
 		testValues.add("9");
 		testValues.add("9");
 		ArrayList<String> values = (ArrayList<String>) hashtable.values();
+//		assertTrue(testValues.containsAll(values));
 		assertEquals(testValues, values);
 		
 //		// the generated collection of values should always be updated
