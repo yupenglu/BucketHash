@@ -12,6 +12,10 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * @author Yupeng Lu
+ * Test cases for the class BucketHash
+ */
 public class BucketHashTest {
 
 	BucketHash<Integer, String> hashtable;
@@ -142,11 +146,13 @@ public class BucketHashTest {
 	@Test
 	public void testPutAll() {
 		BucketHash<Integer, String> hashtableTwo = new BucketHash<Integer, String>();
+		
+		hashtableTwo.put(339, "339");
 		hashtableTwo.put(118, "118");
-//		hashtableTwo.put(239, "239");
 		hashtable.putAll(hashtableTwo);
+		
+		assertEquals("339", hashtable.get(339));
 		assertEquals("118", hashtable.get(118));
-//		assertEquals("239", hashtable.get(239));
 	}
 
 	@Test
@@ -164,15 +170,6 @@ public class BucketHashTest {
 		testKeySet.add(19);
 		Set<Integer> keySet = hashtable.keySet();
 		assertEquals(testKeySet, keySet);
-		
-//		// the generated keySet should always be updated
-//		hashtable.put(118, "118");
-//		testKeySet.add(118);
-//		assertEquals(testKeySet, keySet);
-//		
-//		// the set should support element removal
-//		keySet.remove(118);
-//		assertEquals(null, hashtable.get(118));
 	}
 
 	@Test
@@ -183,24 +180,11 @@ public class BucketHashTest {
 		testValues.add("9");
 		testValues.add("9");
 		ArrayList<String> values = (ArrayList<String>) hashtable.values();
-//		assertTrue(testValues.containsAll(values));
 		assertEquals(testValues, values);
-		
-//		// the generated collection of values should always be updated
-//		hashtable.put(118, "118");
-//		testValues.add("118");
-//		assertEquals(testValues, values);
-//		
-//		// the set should support element removal
-//		hashtable.put(128, "118");
-//		values.remove(118);
-//		assertEquals(null, hashtable.get(118));
-//		assertEquals(null, hashtable.get(128));
 	}
 
 	@Test (expected = UnsupportedOperationException.class)
 	public void testEntrySet() {
 		hashtable.entrySet();
-		System.out.println(hashtable);
 	}
 }

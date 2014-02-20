@@ -7,6 +7,10 @@ import java.util.HashSet;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * @author Yupeng Lu
+ * Test cases for inner class Bucket.
+ */
 public class BucketTest {
 	
 	BucketHash<Integer, String> hashtable;
@@ -97,7 +101,6 @@ public class BucketTest {
 	@Test
 	public void testToString() {
 		bucket.put(20, "20");
-		System.out.println(bucket);
 		assertEquals("20\t20\n9\t9\n", bucket.toString());
 	}
 	
